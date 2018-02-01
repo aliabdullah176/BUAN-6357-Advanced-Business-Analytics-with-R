@@ -1,0 +1,56 @@
+###
+#
+# Synthetic Data
+#
+# generate CART noisy display data
+#
+###
+#  History  20180125  code adapted from longintro_RPART.pdf Example 4.3 (wj)
+#
+###
+#
+#  This code is designed to illustrate the generation of synthetic data
+#  based on a system model. 
+#
+###
+
+set.seed(1)
+
+# constants
+cols <- 7
+
+## parameters
+# number of replications per digit
+n  <- 2
+# probability a segment works correctly
+p  <- 0.9
+
+# digits
+t1 <- rep(0:9, n)
+# segment patterns
+t2 <- c(1,1,1,0,1,1,1,
+        0,0,1,0,0,1,0,
+        1,0,1,1,1,0,1,
+        1,0,1,1,0,1,1,
+        0,1,1,1,0,1,0,
+        1,1,0,1,0,1,1,
+        0,1,0,1,1,1,1,
+        1,0,1,0,0,1,0,
+        1,1,1,1,1,1,1,
+        1,1,1,1,0,1,0)
+
+t3 <- rep(t2, n)
+t4 <- rbinom(length(t3), 1, 1-p) # probability of failure (event)
+
+# flip the bits [ t4 == 1 designates failure event ]
+t5 <- ifelse(t4 == 1, 1-t3, t3)
+
+# reshape
+t5      <- matrix(t5, 10*n, 7, byrow=T)
+dim(t1) <- c(length(t1), 1)
+t6      <- cbind(t1, t5)
+t7      <- as.data.frame(t6)
+
+colnames(t7) <- c("digit", "s1", "s2", "s3", "s4", "s5", "s6", "s7")
+
+ 
